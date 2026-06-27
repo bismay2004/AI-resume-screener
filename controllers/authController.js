@@ -37,8 +37,18 @@ exports.postSignup = async (req, res) => {
     const newUser = await User.create({ name, email, password });
 
     req.login(newUser, (err) => {
-      if (err) return res.render("signup", { error: "Login failed after signup." });
-      res.redirect("/analysis/dashboard");
+      if (err) {
+        console.error("Login error:", err);
+        return res.render("signup", { error: "Login failed after signup." });
+      }
+      
+      req.session.save((saveErr) => {
+        if (saveErr) {
+          console.error("Session save error:", saveErr);
+          return res.render("signup", { error: "Session error. Please try logging in." });
+        }
+        res.redirect("/analysis/dashboard");
+      });
     });
   } catch (err) {
     console.error("Signup error:", err);
@@ -60,8 +70,18 @@ exports.postLogin = (req, res, next) => {
     }
 
     req.login(user, (err) => {
-      if (err) return next(err);
-      res.redirect("/analysis/dashboard");
+      if (err) {
+        console.error("Login error:", err);
+        return next(err);
+      }
+      
+      req.session.save((saveErr) => {
+        if (saveErr) {
+          console.error("Session save error:", saveErr);
+          return next(saveErr);
+        }
+        res.redirect("/analysis/dashboard");
+      });
     });
   })(req, res, next);
 };
