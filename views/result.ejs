@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analysis Result — ResumeAI</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="/css/style.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+<!-- ── NAVBAR ─────────────────────────────────────────── -->
+<nav class="navbar navbar-expand-md navbar-dark bg-primary py-2">
+  <div class="container-fluid px-3 px-md-4">
+    <a class="navbar-brand fw-bold" href="/home"><i class="bi bi-robot me-2"></i><span class="d-none d-sm-inline">ResumeAI</span></a>
+    <!-- Mobile hamburger - opens offcanvas -->
+    <button class="navbar-toggler border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#resultNav" aria-controls="resultNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Desktop nav -->
+    <div class="ms-auto d-none d-md-flex gap-2 flex-wrap">
+      <a href="/analysis/dashboard" class="btn btn-outline-light btn-sm">Dashboard</a>
+      <a href="/resume/upload" class="btn btn-light btn-sm fw-semibold">New Analysis</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Offcanvas Sidebar Navigation -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="resultNav" aria-labelledby="resultNavLabel">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title fw-bold" id="resultNavLabel">
+      <i class="bi bi-robot me-2"></i>ResumeAI
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <ul class="nav flex-column gap-0">
+      <li class="nav-item">
+        <a href="/home" class="nav-link px-4 py-3 border-bottom text-dark">
+          <i class="bi bi-house me-2"></i>Home
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/analysis/dashboard" class="nav-link px-4 py-3 border-bottom text-dark">
+          <i class="bi bi-grid me-2"></i>Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/resume/upload" class="nav-link px-4 py-3 border-bottom text-dark">
+          <i class="bi bi-plus-lg me-2"></i>New Analysis
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/analysis" class="nav-link px-4 py-3 border-bottom text-primary fw-semibold">
+          <i class="bi bi-clock-history me-2"></i>History
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/logout" class="nav-link px-4 py-3 border-bottom text-danger">
+          <i class="bi bi-box-arrow-right me-2"></i>Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- Sidebar -->
+    <div class="col-12 col-md-3 col-lg-2 sidebar-bg min-vh-md-100 py-3 py-md-4 d-none d-md-block">
+      <ul class="nav flex-column gap-1 px-2">
+        <li class="nav-item">
+          <a href="/home" class="nav-link text-dark small">
+            <i class="bi bi-house me-2"></i>Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/analysis/dashboard" class="nav-link text-dark small">
+            <i class="bi bi-grid me-2"></i>Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/resume/upload" class="nav-link text-dark small">
+            <i class="bi bi-upload me-2"></i>New Analysis
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/analysis" class="nav-link active fw-semibold small">
+            <i class="bi bi-clock-history me-2"></i>History
+          </a>
+        </li>
+        <li class="nav-item mt-4">
+          <a href="/logout" class="nav-link text-muted small">
+            <i class="bi bi-box-arrow-right me-2"></i>Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main content -->
+    <div class="col-12 col-md-9 col-lg-10 py-3 py-md-4 px-3 px-md-4">
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start mb-4 gap-2">
+    <div>
+      <h4 class="fw-bold mb-1 small"><%= analysis.jobTitle %></h4>
+      <p class="text-muted mb-0 tiny">
+        <i class="bi bi-file-earmark-pdf text-danger me-1"></i><%= resume.originalFileName %>
+        <span class="mx-2">·</span>
+        <i class="bi bi-calendar me-1"></i><%= new Date(analysis.createdAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %>
+      </p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="/analysis" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-clock-history me-1 d-none d-sm-inline"></i>History
+      </a>
+      <a href="/resume/upload" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus me-1 d-none d-sm-inline"></i>New Analysis
+      </a>
+    </div>
+  </div>
+
+  <!-- ── SCORE CARDS ROW ────────────────────────────────── -->
+  <div class="row g-2 g-md-4 mb-4">
+
+    <!-- ATS Score -->
+    <div class="col-12 col-lg-6">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-3 p-md-4">
+          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-3">
+            <div>
+              <div class="text-muted tiny fw-semibold text-uppercase tracking-wide">ATS Score</div>
+              <div class="fs-2 fw-bold mt-1 mt-md-2
+                <%= analysis.atsScore >= 80 ? 'text-success' : analysis.atsScore >= 60 ? 'text-warning' : 'text-danger' %>">
+                <%= analysis.atsScore %><span class="fs-5 fw-normal text-muted">/100</span>
+              </div>
+            </div>
+            <div class="score-ring score-lg
+              <%= analysis.atsScore >= 80 ? 'score-ring-success' : analysis.atsScore >= 60 ? 'score-ring-warning' : 'score-ring-danger' %>">
+              <i class="bi bi-speedometer2 fs-4"></i>
+            </div>
+          </div>
+          <div class="progress mb-2" style="height:8px; border-radius:10px;">
+            <div class="progress-bar progress-bar-striped
+              <%= analysis.atsScore >= 80 ? 'bg-success' : analysis.atsScore >= 60 ? 'bg-warning' : 'bg-danger' %>"
+              style="width:<%= analysis.atsScore %>%">
+            </div>
+          </div>
+          <div class="tiny mt-2">
+            <% if (analysis.atsScore >= 80) { %>
+              <span class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Strong candidate — likely to pass ATS</span>
+            <% } else if (analysis.atsScore >= 60) { %>
+              <span class="text-warning fw-semibold"><i class="bi bi-exclamation-circle me-1"></i>Moderate — some optimization needed</span>
+            <% } else { %>
+              <span class="text-danger fw-semibold"><i class="bi bi-x-circle me-1"></i>Needs significant improvement</span>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill Match -->
+    <div class="col-12 col-lg-6">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-3 p-md-4">
+          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-3">
+            <div>
+              <div class="text-muted tiny fw-semibold text-uppercase">Skill Match</div>
+              <div class="fs-2 fw-bold mt-1 mt-md-2 text-info">
+                <%= analysis.skillMatch %><span class="fs-5 fw-normal text-muted">%</span>
+              </div>
+            </div>
+            <div class="score-ring score-ring-info">
+              <i class="bi bi-clipboard-check fs-4"></i>
+            </div>
+          </div>
+          <div class="progress mb-2" style="height:8px; border-radius:10px;">
+            <div class="progress-bar bg-info" style="width:<%= analysis.skillMatch %>%"></div>
+          </div>
+          <div class="tiny mt-2 text-muted">
+            <span class="badge bg-success-subtle text-success me-1"><%= analysis.matchingSkills.length %> matched</span>
+            <span class="badge bg-danger-subtle text-danger"><%= analysis.missingSkills.length %> missing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SKILLS ROW ─────────────────────────────────────── -->
+  <div class="row g-4 mb-4">
+
+    <!-- Matching Skills -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-4">
+          <h6 class="fw-bold mb-3">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>Matching Skills
+            <span class="badge bg-success ms-2"><%= analysis.matchingSkills.length %></span>
+          </h6>
+          <% if (analysis.matchingSkills.length > 0) { %>
+            <div class="d-flex flex-wrap gap-2">
+              <% analysis.matchingSkills.forEach(skill => { %>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+                  <i class="bi bi-check2 me-1"></i><%= skill %>
+                </span>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <p class="text-muted small">No matching skills found.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Missing Skills -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-4">
+          <h6 class="fw-bold mb-3">
+            <i class="bi bi-x-circle-fill text-danger me-2"></i>Missing Skills
+            <span class="badge bg-danger ms-2"><%= analysis.missingSkills.length %></span>
+          </h6>
+          <% if (analysis.missingSkills.length > 0) { %>
+            <div class="d-flex flex-wrap gap-2">
+              <% analysis.missingSkills.forEach(skill => { %>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill">
+                  <i class="bi bi-plus me-1"></i><%= skill %>
+                </span>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <p class="text-success small fw-semibold"><i class="bi bi-stars me-1"></i>No missing skills — excellent match!</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STRENGTHS, WEAKNESSES, SUGGESTIONS ─────────────── -->
+  <div class="row g-4 mb-4">
+
+    <!-- Strengths -->
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-4">
+          <h6 class="fw-bold mb-3 text-success">
+            <i class="bi bi-hand-thumbs-up-fill me-2"></i>Strengths
+          </h6>
+          <ul class="list-unstyled mb-0">
+            <% analysis.strengths.forEach(strength => { %>
+              <li class="d-flex align-items-start mb-3">
+                <i class="bi bi-check-circle text-success mt-1 me-2 flex-shrink-0"></i>
+                <span class="small"><%= strength %></span>
+              </li>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weaknesses -->
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-4">
+          <h6 class="fw-bold mb-3 text-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>Weaknesses
+          </h6>
+          <ul class="list-unstyled mb-0">
+            <% analysis.weaknesses.forEach(weakness => { %>
+              <li class="d-flex align-items-start mb-3">
+                <i class="bi bi-dash-circle text-danger mt-1 me-2 flex-shrink-0"></i>
+                <span class="small"><%= weakness %></span>
+              </li>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-4">
+          <h6 class="fw-bold mb-3 text-primary">
+            <i class="bi bi-lightbulb-fill me-2"></i>Suggestions
+          </h6>
+          <ul class="list-unstyled mb-0">
+            <% analysis.suggestions.forEach((suggestion, index) => { %>
+              <li class="d-flex align-items-start mb-3">
+                <span class="badge bg-primary-subtle text-primary rounded-circle fw-bold me-2 flex-shrink-0"
+                      style="width:22px;height:22px;line-height:22px;font-size:11px;padding:0;text-align:center;">
+                  <%= index + 1 %>
+                </span>
+                <span class="small"><%= suggestion %></span>
+              </li>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CALL TO ACTION ─────────────────────────────────── -->
+  <div class="card border-0 bg-primary text-white rounded-4">
+    <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <h6 class="fw-bold mb-1">Ready to optimize your resume?</h6>
+        <p class="mb-0 text-white-75 small">Apply the suggestions above, update your resume, and re-analyze to track your score improvement.</p>
+      </div>
+      <div class="d-flex gap-2 flex-shrink-0">
+        <a href="/analysis" class="btn btn-outline-light btn-sm">View History</a>
+        <a href="/resume/upload" class="btn btn-light btn-sm fw-semibold">Re-analyze</a>
+      </div>
+    </div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Handle offcanvas menu clicks - properly navigate and close
+  document.addEventListener('DOMContentLoaded', function() {
+    const offcanvasElement = document.getElementById('resultNav');
+    if (!offcanvasElement) return;
+    
+    const offcanvasInstance = new bootstrap.Offcanvas(offcanvasElement);
+    const navLinks = offcanvasElement.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href) {
+          offcanvasInstance.hide();
+          setTimeout(() => { window.location.href = href; }, 100);
+          e.preventDefault();
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
